@@ -1,0 +1,154 @@
+{
+  "uid" : "ab17fc5a4eb3bca4b216b548c7f9fcbc",
+  "name" : "timeline",
+  "children" : [ {
+    "name" : "cuicaihongdeMacBook-Pro.local",
+    "children" : [ {
+      "name" : "62574-MainThread",
+      "children" : [ {
+        "name" : "test_case_02",
+        "uid" : "c42b5bd7768fbf1b",
+        "parentUid" : "2ad0b2c1bc00498eecc0e9f92f6974c5",
+        "status" : "passed",
+        "time" : {
+          "start" : 1607067724679,
+          "stop" : 1607067724679,
+          "duration" : 0
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "test_case_01",
+        "uid" : "5e1fc8bb66884159",
+        "parentUid" : "2ad0b2c1bc00498eecc0e9f92f6974c5",
+        "status" : "failed",
+        "time" : {
+          "start" : 1607067724159,
+          "stop" : 1607067724160,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2ad0b2c1bc00498eecc0e9f92f6974c5"
+    }, {
+      "name" : "63949-MainThread",
+      "children" : [ {
+        "name" : "test_case",
+        "uid" : "e3d08d4d7d67a89d",
+        "parentUid" : "e457c757589e8453a3d180e90fa45f62",
+        "status" : "passed",
+        "time" : {
+          "start" : 1607069821271,
+          "stop" : 1607069821290,
+          "duration" : 19
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "e457c757589e8453a3d180e90fa45f62"
+    }, {
+      "name" : "63248-MainThread",
+      "children" : [ {
+        "name" : "test_case_02",
+        "uid" : "be51bab4a54580e9",
+        "parentUid" : "96d6b11ec5f9cd8a954865464ea7a8fa",
+        "status" : "passed",
+        "time" : {
+          "start" : 1607068846000,
+          "stop" : 1607068846000,
+          "duration" : 0
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      }, {
+        "name" : "test_case_01",
+        "uid" : "1c1ce5862770e1a4",
+        "parentUid" : "96d6b11ec5f9cd8a954865464ea7a8fa",
+        "status" : "failed",
+        "time" : {
+          "start" : 1607068845751,
+          "stop" : 1607068845752,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "96d6b11ec5f9cd8a954865464ea7a8fa"
+    }, {
+      "name" : "63684-MainThread",
+      "children" : [ {
+        "name" : "test_case",
+        "uid" : "8aedf3de7edb73ff",
+        "parentUid" : "a2ef25b509ebe9ee5815d10205c45518",
+        "status" : "broken",
+        "time" : {
+          "start" : 1607069436842,
+          "stop" : 1607069436842,
+          "duration" : 0
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "a2ef25b509ebe9ee5815d10205c45518"
+    }, {
+      "name" : "63774-MainThread",
+      "children" : [ {
+        "name" : "test_case",
+        "uid" : "e07fccce2f71d73a",
+        "parentUid" : "4916c5357aa0cf0f7a8e9f0b13fbb993",
+        "status" : "broken",
+        "time" : {
+          "start" : 1607069580152,
+          "stop" : 1607069580169,
+          "duration" : 17
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "4916c5357aa0cf0f7a8e9f0b13fbb993"
+    }, {
+      "name" : "63528-MainThread",
+      "children" : [ {
+        "name" : "test_case",
+        "uid" : "4e73a320e74950c2",
+        "parentUid" : "2152bf432a613966fdf2df609684b2e2",
+        "status" : "passed",
+        "time" : {
+          "start" : 1607069223032,
+          "stop" : 1607069223036,
+          "duration" : 4
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "2152bf432a613966fdf2df609684b2e2"
+    }, {
+      "name" : "63411-MainThread",
+      "children" : [ {
+        "name" : "test_case",
+        "uid" : "5fc1bef7cd76341a",
+        "parentUid" : "76850b57baafb245f2fdff5d8e293629",
+        "status" : "passed",
+        "time" : {
+          "start" : 1607069057528,
+          "stop" : 1607069057529,
+          "duration" : 1
+        },
+        "flaky" : false,
+        "newFailed" : false,
+        "parameters" : [ ]
+      } ],
+      "uid" : "76850b57baafb245f2fdff5d8e293629"
+    } ],
+    "uid" : "2146284589a9d33c36210c49a32f9742"
+  } ]
+}

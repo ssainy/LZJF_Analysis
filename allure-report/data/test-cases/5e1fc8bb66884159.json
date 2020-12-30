@@ -1,0 +1,100 @@
+{
+  "uid" : "5e1fc8bb66884159",
+  "name" : "test_case_01",
+  "fullName" : "test_study#test_case_01",
+  "historyId" : "f66cf659da10d406f30c4587f1cfb23b",
+  "time" : {
+    "start" : 1607067724159,
+    "stop" : 1607067724160,
+    "duration" : 1
+  },
+  "description" : "\n    用例描述：Test case 01\n    ",
+  "descriptionHtml" : "<pre><code>用例描述：Test case 01\n</code></pre>\n",
+  "status" : "failed",
+  "statusMessage" : "AssertionError: assert 0",
+  "statusTrace" : "@allure.feature('test_module_01')\n    def test_case_01():\n        \"\"\"\n        用例描述：Test case 01\n        \"\"\"\n>       assert 0\nE       assert 0\n\ntest_study.py:10: AssertionError",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ {
+    "name" : "base_url",
+    "time" : {
+      "start" : 1607067724153,
+      "stop" : 1607067724153,
+      "duration" : 0
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  }, {
+    "name" : "_verify_url",
+    "time" : {
+      "start" : 1607067724153,
+      "stop" : 1607067724153,
+      "duration" : 0
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  }, {
+    "name" : "fix1",
+    "time" : {
+      "start" : 1607067724153,
+      "stop" : 1607067724153,
+      "duration" : 0
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  } ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "feature",
+    "value" : "test_module_01"
+  }, {
+    "name" : "suite",
+    "value" : "test_study"
+  }, {
+    "name" : "host",
+    "value" : "cuicaihongdeMacBook-Pro.local"
+  }, {
+    "name" : "thread",
+    "value" : "62574-MainThread"
+  }, {
+    "name" : "framework",
+    "value" : "pytest"
+  }, {
+    "name" : "language",
+    "value" : "cpython3"
+  }, {
+    "name" : "package",
+    "value" : "test_study"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure2"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : true,
+  "retry" : true,
+  "extra" : {
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "5e1fc8bb66884159.json",
+  "parameterValues" : [ ]
+}

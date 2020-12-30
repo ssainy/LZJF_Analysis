@@ -1,0 +1,98 @@
+{
+  "uid" : "c42b5bd7768fbf1b",
+  "name" : "test_case_02",
+  "fullName" : "test_study#test_case_02",
+  "historyId" : "b59429facfaffefdafc92db6c14f90d5",
+  "time" : {
+    "start" : 1607067724679,
+    "stop" : 1607067724679,
+    "duration" : 0
+  },
+  "description" : "\n    用例描述：Test case 02\n    ",
+  "descriptionHtml" : "<pre><code>用例描述：Test case 02\n</code></pre>\n",
+  "status" : "passed",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ {
+    "name" : "base_url",
+    "time" : {
+      "start" : 1607067724153,
+      "stop" : 1607067724153,
+      "duration" : 0
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  }, {
+    "name" : "_verify_url",
+    "time" : {
+      "start" : 1607067724153,
+      "stop" : 1607067724153,
+      "duration" : 0
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  }, {
+    "name" : "fix1",
+    "time" : {
+      "start" : 1607067724153,
+      "stop" : 1607067724153,
+      "duration" : 0
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  } ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "feature",
+    "value" : "test_module_02"
+  }, {
+    "name" : "suite",
+    "value" : "test_study"
+  }, {
+    "name" : "host",
+    "value" : "cuicaihongdeMacBook-Pro.local"
+  }, {
+    "name" : "thread",
+    "value" : "62574-MainThread"
+  }, {
+    "name" : "framework",
+    "value" : "pytest"
+  }, {
+    "name" : "language",
+    "value" : "cpython3"
+  }, {
+    "name" : "package",
+    "value" : "test_study"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure2"
+  } ],
+  "parameters" : [ ],
+  "links" : [ ],
+  "hidden" : true,
+  "retry" : true,
+  "extra" : {
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "c42b5bd7768fbf1b.json",
+  "parameterValues" : [ ]
+}

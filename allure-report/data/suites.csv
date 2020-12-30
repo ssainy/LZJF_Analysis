@@ -1,0 +1,8 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Fri Dec 04 16:00:46 CST 2020","Fri Dec 04 16:00:46 CST 2020","0","","test_study","","","","test_case_02","
+    用例描述：Test case 02
+    "
+"failed","Fri Dec 04 16:00:45 CST 2020","Fri Dec 04 16:00:45 CST 2020","1","","test_study","","","","test_case_01","
+    用例描述：Test case 01
+    "
+"passed","Fri Dec 04 16:17:01 CST 2020","Fri Dec 04 16:17:01 CST 2020","19","","test_study","","","","test_case",""

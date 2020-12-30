@@ -1,0 +1,112 @@
+{
+  "uid" : "e07fccce2f71d73a",
+  "name" : "test_case",
+  "fullName" : "test_study#test_case",
+  "historyId" : "b4ef70d6c90b465815c1250fbe9f0609",
+  "time" : {
+    "start" : 1607069580152,
+    "stop" : 1607069580169,
+    "duration" : 17
+  },
+  "status" : "broken",
+  "statusMessage" : "AttributeError: module 'allure' has no attribute 'attach_type'",
+  "statusTrace" : "@allure.feature('test_module_01')\n    @allure.story('test_story_01')\n    @allure.severity('blocker')\n    @allure.issue(\"http://www.baidu.com\")\n    @allure.testcase(\"http://www.testlink.com\")\n    def test_case():\n        str1 = 'hello'\n        str2 = 'world'\n        file = open('./test.JPG', 'rb').read()\n>       allure.attach('test_img', file, allure.attach_type.JPG)\nE       AttributeError: module 'allure' has no attribute 'attach_type'\n\ntest_study.py:23: AttributeError",
+  "flaky" : false,
+  "newFailed" : false,
+  "beforeStages" : [ {
+    "name" : "_verify_url",
+    "time" : {
+      "start" : 1607069580144,
+      "stop" : 1607069580145,
+      "duration" : 1
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  }, {
+    "name" : "base_url",
+    "time" : {
+      "start" : 1607069580143,
+      "stop" : 1607069580144,
+      "duration" : 1
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  }, {
+    "name" : "fix1",
+    "time" : {
+      "start" : 1607069580145,
+      "stop" : 1607069580145,
+      "duration" : 0
+    },
+    "status" : "passed",
+    "steps" : [ ],
+    "attachments" : [ ],
+    "parameters" : [ ],
+    "stepsCount" : 0,
+    "attachmentsCount" : 0,
+    "shouldDisplayMessage" : false,
+    "hasContent" : false
+  } ],
+  "afterStages" : [ ],
+  "labels" : [ {
+    "name" : "severity",
+    "value" : "blocker"
+  }, {
+    "name" : "feature",
+    "value" : "test_module_01"
+  }, {
+    "name" : "story",
+    "value" : "test_story_01"
+  }, {
+    "name" : "suite",
+    "value" : "test_study"
+  }, {
+    "name" : "host",
+    "value" : "cuicaihongdeMacBook-Pro.local"
+  }, {
+    "name" : "thread",
+    "value" : "63774-MainThread"
+  }, {
+    "name" : "framework",
+    "value" : "pytest"
+  }, {
+    "name" : "language",
+    "value" : "cpython3"
+  }, {
+    "name" : "package",
+    "value" : "test_study"
+  }, {
+    "name" : "resultFormat",
+    "value" : "allure2"
+  } ],
+  "parameters" : [ ],
+  "links" : [ {
+    "name" : "http://www.testlink.com",
+    "url" : "http://www.testlink.com",
+    "type" : "test_case"
+  }, {
+    "name" : "http://www.baidu.com",
+    "url" : "http://www.baidu.com",
+    "type" : "issue"
+  } ],
+  "hidden" : true,
+  "retry" : true,
+  "extra" : {
+    "categories" : [ ],
+    "tags" : [ ]
+  },
+  "source" : "e07fccce2f71d73a.json",
+  "parameterValues" : [ ]
+}
