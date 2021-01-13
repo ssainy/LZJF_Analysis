@@ -88,13 +88,13 @@ def convert_time(time):
                                             return None
 
 
-def suppvaluerank(index_full_data,df, max, min, groupby_col=['company_ID_num'], weights={}):
+def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num'], weights={}):
     result = pd.DataFrame()
     for col in min.index:
         i = min.loc[col]
         min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
-        tmp = abs(round((max_data - df[i]) / (max_data - min_data), 4))
+        tmp = abs((max_data - df[i]) / (max_data - min_data))
         if max_data == min_data:
             tmp[i] = 1
 
@@ -106,21 +106,38 @@ def suppvaluerank(index_full_data,df, max, min, groupby_col=['company_ID_num'], 
         i = max.loc[col]
         min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
-        tmp = abs(round((df[i] - min_data) / (max_data - min_data), 4))
+        tmp = abs((df[i] - min_data) / (max_data - min_data))
+        if max_data == min_data:
+            tmp[i] = 0
+        result = pd.concat([result, tmp], axis=1, )
+    for col in avg.index:
+        i = avg.loc[col]
+        min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
+        max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
+        avg_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'avg'].item()
+        tmp = abs((1 - abs(df[i] - avg_data)) / (max_data - min_data))
         if max_data == min_data:
             tmp[i] = 1
         result = pd.concat([result, tmp], axis=1, )
     return result
+def score_exception(a):
+    if a > 90:
+        return 90.0
+    elif a < 0:
+        return 0
+    else:
+        return a
 def get_score(rank,weights=[]):
     rank = rank * weights
     rank['score'] = round(rank.sum(axis=1), 4)
-    #rank['score'] = round(rank['score'].apply(lambda x :x * 1.65),2)
+   # rank['score'] = round(rank['score'].apply(lambda x :x * 1.6),2)
     rank['rank'] = rank['score'].rank(ascending=False, method='dense').apply(int)
     #重新设置索引列
     rank = rank.reset_index()
     rank = rank.sort_values('rank')
+    rank['score'] = rank.apply(lambda x: score_exception(x.score), axis=1)
     rank['grade'] = pd.cut(rank['score'], [0, 15, 30, 45, 60, 100], labels=['E', 'D', 'C', 'B', 'A'])
-    rank['bank_creditlimit'] = rank['grade'].map({'A': 2000000, 'B': 500000,'C':300000.0,'D':0,'E':0})
+    rank['bank_creditlimit'] = rank['grade'].map({'A': 700000, 'B': 500000,'C':300000.0,'D':0,'E':0})
     return rank
 result = pd.read_sql_query("select * from full_index_info ;",engine)
 result = result.fillna(0)
@@ -128,7 +145,7 @@ print(result)
 #print(weight_info)
 weight_info = pd.read_sql_query("select * from con_index_weight;", engine)
 index_full_data = pd.read_sql_query("select * from con_index_full_data;",engine)
-supp_rank = suppvaluerank(index_full_data,result, weight_info[['index_name', 'index_weight']].loc[weight_info['index_direction'] == 'max', ['index_name']],weight_info.loc[weight_info['index_direction'] == 'min', ['index_name']],weights=weight_info)
+supp_rank = suppvaluerank(index_full_data,result, weight_info[['index_name', 'index_weight']].loc[weight_info['index_direction'] == 'max', ['index_name']],weight_info.loc[weight_info['index_direction'] == 'min', ['index_name']],weight_info.loc[weight_info['index_direction'] == 'avg', ['index_name']],weights=weight_info)
 # write_mysql(supp_rank, "con_index_info_0_1")
 print(supp_rank)
 supp_weight = dict(zip(weight_info['index_name'], weight_info['index_weight']))
@@ -161,13 +178,7 @@ def remark(a,b,c):
         return "月均销售订单小于0"
     elif b/c > 2 or b/c == 2:
         return "月均采购金额与月均销售金额的比值<= 2"
-def score_exception(a):
-    if a > 90:
-        return 90.0
-    elif a < 0:
-        return 0
-    else:
-        return a
+
 ss = result[['company_id','month_amt_orders','sale_month_amt_orders']]
 ss['grade'] = score[['grade']]
 ss['MODELRESULT'] = ss.apply(lambda x: function(x.grade, x.month_amt_orders,x.sale_month_amt_orders), axis=1)
@@ -176,7 +187,7 @@ ss['REMARK'] = ss.apply(lambda x: remark(x.grade, x.month_amt_orders,x.sale_mont
 score['MODELRESULT'] = ss[['MODELRESULT']]
 score['score'] = score.apply(lambda x : score_exception(x.score), axis=1)
 print(score)
-#write_mysql(score, "con_index_score")
+write_mysql(score, "con_index_score")
 
 #modelRes = score[['company_id','creditlimit','MODELRESULT','grade','score']]
 #modelRes.columns = ['company_id','MODELLIMIT','MODELRESULT','MODELLEVEL','MODELSCORE']
@@ -186,4 +197,4 @@ print(score)
 # if pd.read_sql_query(query_sql, engine).empty is not True:
 #     engine.execute(del_sql)
 # print(modelRes)
-#write_mysql(modelRes, "con_approve_score")
+# write_mysql(modelRes, "con_approve_score")

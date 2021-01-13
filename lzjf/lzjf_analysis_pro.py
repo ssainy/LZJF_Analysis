@@ -3,14 +3,11 @@ import sys
 import pandas as pd
 import datetime
 from sqlalchemy import create_engine
-from sqlalchemy.types import VARCHAR
-from interval import Interval
-import warnings
-warnings.filterwarnings("ignore")
+from sqlalchemy.types import VARCHAR, Float, Integer,String
 
 
-pd.set_option('display.max_columns', 100)  # a就是你要设置显示的最大列数参数
-pd.set_option('display.max_rows', 10)  # b就是你要设置显示的最大的行数参数
+pd.set_option('display.max_columns', 100000)  # a就是你要设置显示的最大列数参数
+pd.set_option('display.max_rows', 100)  # b就是你要设置显示的最大的行数参数
 hostip="192.144.143.127"
 hostport=3306
 hostdb="pscs_congnition_dev"
@@ -19,19 +16,11 @@ password="root6114EveryAi!root6114EveryAi"
 REGISTERNO="FF80808173942BCB0173942BCB330013"
 
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(username, password, hostip, hostport, hostdb))
-def Read_Rules(RULEID):
-    result = pd.read_sql_query("select RULEDEF from con_rules where RULEID = '{}';".format(RULEID),engine)['RULEDEF'][0]
-    return result
-
-datelimit = datetime.datetime.now().strftime('%Y-%m-%d')
-if Read_Rules("DateLimit").split("|")[0] == 'True':
-    datelimit = Read_Rules("DateLimit").split("|")[1]
-
 index_full_data = pd.read_sql_query("select * from con_index_full_data;",engine)
-buy_order = pd.read_sql_query("select * from con_trs_order where REGISTERNO = '{}' and order_time > DATE_SUB('{}', INTERVAL {} YEAR) and order_type = '采购';".format(REGISTERNO,datelimit,Read_Rules("BuyOrderYear")),engine)
-saler_order = pd.read_sql_query("select * from con_trs_order where REGISTERNO = '{}' and order_time > DATE_SUB('{}', INTERVAL {} YEAR) and order_type = '销售';".format(REGISTERNO,datelimit,Read_Rules("SaleOrderYear")),engine)
+buy_order = pd.read_sql_query("select * from con_trs_order where REGISTERNO = '{}' and order_time > DATE_SUB(CURDATE(), INTERVAL 2 YEAR) and order_type = '采购';".format(REGISTERNO),engine)
+saler_order = pd.read_sql_query("select * from con_trs_order where REGISTERNO = '{}' and order_time > DATE_SUB(CURDATE(), INTERVAL 2 YEAR) and order_type = '销售';".format(REGISTERNO),engine)
 weight_info = pd.read_sql_query("select * from con_index_weight;", engine)
-grade_info = pd.read_sql_query("select * from con_grade_score;",engine)
+
 def write_mysql(df_raw,table_name):
     mysqlInfo = {
         "host": hostip,
@@ -94,11 +83,7 @@ def update_index(index_full_data,df,weight_info):
             engine.execute(min_sql)
     index_full_data = pd.read_sql_query("select * from con_index_full_data;",engine)
     return index_full_data
-def fc(a):
-    if a == 0:
-        return 1
-    else:
-        return a
+
 def suppvaluerank(index_full_data,df, max, min, groupby_col=['company_ID_num'], weights={}):
     result = pd.DataFrame()
     for col in min.index:
@@ -106,28 +91,20 @@ def suppvaluerank(index_full_data,df, max, min, groupby_col=['company_ID_num'], 
         min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
         tmp = abs(round((max_data - df[i]) / (max_data - min_data), 4))
-
-        if max_data == min_data:
-            tmp[i] = 1
-
         if ('company_ID' and 'REGISTERNO' in result.columns):
             result = pd.concat([result, tmp], axis=1, )
         else:
-            result = pd.concat([df['company_ID'],df['REGISTERNO'], result, tmp], axis=1, )
+            result = pd.concat([df['company_ID'],df['REGISTERNO'],result, tmp], axis=1, )
     for col in max.index:
         i = max.loc[col]
         min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
         tmp = abs(round((df[i] - min_data) / (max_data - min_data), 4))
-        if max_data == min_data:
-            tmp[i] = 1
         result = pd.concat([result, tmp], axis=1, )
     return result
 def score_exception(a):
-    if a > 90:
-        return 90.0
-    elif a < 0:
-        return 0
+    if a > 100 or a < 0:
+        return 0.0001
     else:
         return a
 def grade_exception(a,b):
@@ -140,45 +117,19 @@ def credit_exception(a,b):
         return 0
     else:
         return b
-def grade_list(grade,score):
-    alist = []
-    condition_cn = score.strip().replace('，', ',').replace(
-        '（', '(').replace('）', ')')
-    s = condition_cn.split(",")
-    # 数组中的数据分别为：1：是否包含，2：开始值，3：结束值，4：是否包含
-    # 其中数组中的数值1：代表闭区间，0代表开区间
-    alist.insert(0, False)
-    alist.insert(3, False)
-    if s[0].startswith('['):
-        alist[0] = True
-    alist.insert(1, int(s[0][1:]))
-    alist.insert(2, int(s[1][0:-1]))
-    if s[1].endswith(']'):
-        alist[3] = True
-    alist.insert(4, grade)
-    return alist
-
-def grade_res(grade_info,score):
-    res = grade_info.values.tolist()
-    for i in res:
-        s = grade_list(i[0], i[1])
-        if score in Interval(s[1], s[2], lower_closed=s[0], upper_closed=s[3]):
-            return s[4]
 def get_score(rank,weights=[]):
     rank = rank * weights
     rank['score'] = round(rank.sum(axis=1), 4)
-   # rank['score'] = round(rank['score'].apply(lambda x: x * 1.6), 2)
     rank['rank'] = rank['score'].rank(ascending=False, method='dense').apply(int)
+    rank['score'] = rank['score'].apply(lambda x: score_exception(x))
     #重新设置索引列
     rank = rank.reset_index()
     rank = rank.sort_values('rank')
-    rank['score'] = rank.apply(lambda x: score_exception(x.score), axis=1)
-    rank['grade'] = rank.apply(lambda x: grade_res(grade_info,x.score),axis=1)
-
-    # rank['grade'] = pd.cut(rank['score'], [0, 15, 30, 45, 60, 100], labels=['E', 'D', 'C', 'B', 'A'])
+    rank['grade'] = pd.cut(rank['score'], [0, 15, 30, 45, 60, 100], labels=['E', 'D', 'C', 'B', 'A'])
     rank['grade'] = rank.apply(lambda x:grade_exception(x.score,x.grade),axis = 1)
-    rank['bank_creditlimit'] = rank['grade'].map(eval(Read_Rules('ModelGradeLimitMap')))
+    rank['bank_creditlimit'] = rank['grade'].map({'A': 700000, 'B': 500000,'C':300000,'D':0,'E':0,'N':0})
     return rank
+
 if buy_order.empty is True or saler_order.empty is True:
     sys.stderr.write(r'采购或销售订单数据为空，程序终止!')
     raise SystemExit(1)
@@ -309,8 +260,8 @@ buy_result = pd.merge(buy_result, tmp, left_on=[u'company_ID',u'REGISTERNO'], ri
 
 buy_order_finish = buy_order_finish.reset_index(drop=True)
 # 过去1、2、3、6月的交易次数和交易金额和
-
-data_time = datetime.datetime.strptime(datelimit, '%Y-%m-%d')
+data_time = buy_order_finish["order_time"].max()
+data_time = datetime.datetime.now()
 timediff_list = [30, 60, 90, 180]
 for timediff in timediff_list:
     timespan = datetime.timedelta(days=timediff)
@@ -465,7 +416,8 @@ saler_result = pd.merge(saler_result, tmp, left_on=[u'saler_ID',u'REGISTERNO'], 
 
 saler_order_finish = saler_order_finish.reset_index(drop=True)
 # 过去1、2、3、6月的交易次数和交易金额和
-data_time = datetime.datetime.strptime(datelimit, '%Y-%m-%d')
+data_time = saler_order_finish["order_time"].max()
+data_time = datetime.datetime.now()
 timediff_list = [30, 60, 90, 180]
 for timediff in timediff_list:
     timespan = datetime.timedelta(days=timediff)
@@ -521,14 +473,14 @@ cre = pd.merge(index_info, score, on=['company_ID','REGISTERNO'])[['company_ID',
 cre = cre[[u'company_ID',u'REGISTERNO', u'month_amt_orders_x', u'sale_month_amt_orders_x', u'bank_creditlimit']]
 cre.columns = ['company_ID','REGISTERNO', 'month_amt_orders', 'sale_month_amt_orders', 'bank_creditlimit']
 print(cre)
-cre['month_amt_orders'] = cre['month_amt_orders'].apply(lambda x: x * int(Read_Rules('BuyRules')))
-cre['sale_month_amt_orders'] = cre['sale_month_amt_orders'].apply(lambda x: x * int(Read_Rules('SaleRules')))
+cre['month_amt_orders'] = cre['month_amt_orders'].apply(lambda x: x * 3)
+cre['sale_month_amt_orders'] = cre['sale_month_amt_orders'].apply(lambda x: x * 3)
 # min（月均采购金额*3，月均销售金额*3，评分等级对应授信最大限额）
 score['creditlimit'] = round(cre[["month_amt_orders", "sale_month_amt_orders", "bank_creditlimit"]].min(axis=1),4)
 print(cre)
 def function(a,b,c):
     print(a,b,c)
-    if a in grade_info[grade_info['result'] == '0']['grade'].tolist() and eval(str(b) + Read_Rules('BuyMonthAmount')) and eval(str(c) + Read_Rules('SaleMonthAmount')) and eval(str(b / c) + Read_Rules('SaleBuyAmountRatio')):
+    if a in {'A','B','C'} and b > 0 and c > 0 and b/c < 2:
         return 0
     else:
         return 1
@@ -536,14 +488,14 @@ def function(a,b,c):
 def remark(a,b,c):
     if a == "N":
         return "评级出错了，请检查订单数据~"
-    elif a not in grade_info[grade_info['result'] == '0']['grade'].tolist():
-        return "评分等级"+str(a)+"不在范围内"
-    elif eval(str(b) + Read_Rules('BuyMonthAmount')) == False:
-        return "月均采购订单"+str(b)+"不满足"+Read_Rules('BuyMonthAmount')
-    elif eval(str(c) + Read_Rules('SaleMonthAmount')) == False:
-        return "月均销售订单"+str(c)+"不满足"+Read_Rules('SaleMonthAmount')
-    elif eval(str(b / c) + Read_Rules('SaleBuyAmountRatio')) == False:
-        return "月均采购金额"+str(b)+"与月均销售金额"+str(c)+"的比值不满足"+ Read_Rules('SaleBuyAmountRatio')
+    elif a not in {'A','B','C'}:
+        return "评分等级不在范围内"
+    elif b < 0 or b == 0.0:
+        return "月均采购订单小于等于0"
+    elif c < 0 or c == 0.0:
+        return "月均销售订单小于等于0"
+    elif b/c > 2 or b/c == 2:
+        return "月均采购金额与月均销售金额的比值>= 2"
 
 ss = index_info[['company_ID','REGISTERNO','month_amt_orders','sale_month_amt_orders']]
 ss['grade'] = score[['grade']]
