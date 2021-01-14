@@ -2,7 +2,6 @@
 import pandas as pd
 import datetime
 from sqlalchemy import create_engine
-import sqlalchemy
 from sqlalchemy.types import VARCHAR, Float, Integer, String
 import warnings
 warnings.filterwarnings("ignore")
@@ -74,34 +73,6 @@ def convert_time(time):
                                             #print("Wrong date format : %s " % time)
                                             return None
 
-
-
-def suppvaluerank(df, max, min, groupby_col=['company_ID_num'], weights={}):
-    buy_result = pd.DataFrame()
-    for col in min.index:
-        i = min.loc[col]
-        tmp = abs(round((df[i].max() - df[i]) / (df[i].max() - df[i].min()), 4))
-        if ("company_id" in buy_result.columns):
-            buy_result = pd.concat([buy_result, tmp], axis=1, )
-        else:
-            buy_result = pd.concat([df['company_id'], buy_result, tmp], axis=1, )
-    for col in max.index:
-        i = max.loc[col]
-        tmp = abs(round((df[i] - df[i].min()) / (df[i].max() - df[i].min()), 4))
-        buy_result = pd.concat([buy_result, tmp], axis=1, )
-    return buy_result
-
-
-def get_score(rank, weights=[]):
-    rank = rank * weights
-    rank['score'] = round(rank.sum(axis=1), 4)
-    rank['rank'] = rank['score'].rank(ascending=False, method='dense').apply(int)
-    # 重新设置索引列
-    rank = rank.reset_index()
-    rank = rank.sort_values('rank')
-    rank['grade'] = pd.cut(rank['score'], [0, 15, 30, 45, 60, 100], labels=['E', 'D', 'C', 'B', 'A'])
-    rank['bank_creditlimit'] = rank['grade'].map({'A': 5000000, 'B': 1000000, 'C': 350000, 'D': 0, 'E': 0})
-    return rank
 
 buyer_id = pd.read_sql_query("select buyer_id  from tra_purchase_order where  ordering_time > DATE_SUB('{}', INTERVAL 2 YEAR) group by buyer_id ;".format(datelimit),engine)
 seller_id = pd.read_sql_query("select seller_id  from tra_sales_order where  ordering_time > DATE_SUB('{}', INTERVAL 2 YEAR) group by seller_id ;".format(datelimit),engine)
