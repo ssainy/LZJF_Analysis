@@ -1,10 +1,7 @@
-# coding: utf-8
-import pandas as pd
-import numpy as np
-dt = pd.DataFrame({'c1': [1, 0, 1.1, np.nan,56, 88], 'c2': ['a', 'b', np.nan, np.nan\
-, 'd', 'e'], 'c3': [np.nan, 62, 26, np.nan, np.nan,71], 'd4': \
-[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]})
+a = [1,2,3,4,56,7,8,9]
+b = [1,2,3,8,6,5,9,0]
+s= list(set(a).intersection(set(b)))
 
-dt1 = dt[dt['c1']>=1]
+print(s)
 
-print(dt1)
+print(len(a))

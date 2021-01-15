@@ -76,14 +76,16 @@ def convert_time(time):
 
 buyer_id = pd.read_sql_query("select buyer_id  from tra_purchase_order where  ordering_time > DATE_SUB('{}', INTERVAL 2 YEAR) group by buyer_id ;".format(datelimit),engine)
 seller_id = pd.read_sql_query("select seller_id  from tra_sales_order where  ordering_time > DATE_SUB('{}', INTERVAL 2 YEAR) group by seller_id ;".format(datelimit),engine)
-buy_list = buyer_id['buyer_id']
-seller_list= seller_id['seller_id']
+buy_list = buyer_id['buyer_id'].to_list()
+# 采购客户ID转为str形
+buy_list = [ str(i) for i in buy_list ]
+seller_list= seller_id['seller_id'].to_list()
 buy_result_all = pd.DataFrame()
 saler_result_all = pd.DataFrame()
 order = pd.DataFrame()
 step = 50
-company_list = seller_list.to_list()
-print(company_list)
+# 取采购订单和销售订单的交集客户
+company_list = list(set(buy_list).intersection(set(seller_list)))
 b = [company_list[i:i+step] for i in range(0,len(company_list),step)]
 for buyer_id in b:
     buyer_id = ','.join(["'%s'" % item for item in buyer_id])
@@ -451,7 +453,7 @@ if saler_result_all.empty == False and buy_result_all.empty == False:
     result = result.fillna(0)
     print(result)
     result = result[(result['order_finish_count']>=1)&(result['sale_order_finish_count']>=1)]
-    write_mysql(result, 'full_index_info')
+    #write_mysql(result, 'full_index_info')
     result = result.drop(
         ['company_id', 'first_tran_time', 'last_tran_time', 'sale_first_tran_time', 'sale_last_tran_time'], axis=1)
     con_index_full_data = pd.DataFrame()
@@ -460,4 +462,4 @@ if saler_result_all.empty == False and buy_result_all.empty == False:
     con_index_full_data['avg'] = round(result.mean(), 4)
     con_index_full_data = con_index_full_data.reset_index()
     print(con_index_full_data)
-    write_mysql(con_index_full_data, 'con_index_full_data')
+    #write_mysql(con_index_full_data, 'con_index_full_data')
