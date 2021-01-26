@@ -95,9 +95,8 @@ def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num
         min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
         tmp = abs((max_data - df[i]) / (max_data - min_data))
-        if max_data == min_data:
+        if max_data == min_data and max_data == 0:
             tmp[i] = 1
-
         if ('company_id'  in result.columns):
             result = pd.concat([result, tmp], axis=1, )
         else:
@@ -107,7 +106,7 @@ def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num
         min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
         tmp = abs((df[i] - min_data) / (max_data - min_data))
-        if max_data == min_data:
+        if max_data == min_data and max_data == 0:
             tmp[i] = 0
         result = pd.concat([result, tmp], axis=1, )
     for col in avg.index:
@@ -116,7 +115,7 @@ def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
         avg_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'avg'].item()
         tmp = abs((1 - abs(df[i] - avg_data)) / (max_data - min_data))
-        if max_data == min_data:
+        if max_data == min_data and max_data == 0:
             tmp[i] = 1
         result = pd.concat([result, tmp], axis=1, )
     return result

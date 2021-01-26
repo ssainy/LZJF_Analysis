@@ -7,7 +7,6 @@ from sqlalchemy.types import VARCHAR, Float, Integer,String
 import warnings
 warnings.filterwarnings("ignore")
 
-
 pd.set_option('display.max_columns', 100)  # a就是你要设置显示的最大列数参数
 pd.set_option('display.max_rows', 10)  # b就是你要设置显示的最大的行数参数
 hostip="192.144.143.127"
@@ -15,7 +14,8 @@ hostport=3306
 hostdb="pscs_congnition_dev"
 username="root"
 password="root6114EveryAi!root6114EveryAi"
-REGISTERNO="FF80808173942BCB0173942BCB330013"
+REGISTERNO="FF80808173942BCB0173942BCB330015"
+
 datelimit = datetime.datetime.now().strftime('%Y-%m-%d')
 
 engine = create_engine("mysql+pymysql://{}:{}@{}:{}/{}".format(username, password, hostip, hostport, hostdb))
@@ -91,7 +91,7 @@ def fc(a):
         return 1
     else:
         return a
-def suppvaluerank(index_full_data,df, max, min, groupby_col=['company_ID_num'], weights={}):
+def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num'], weights={}):
     result = pd.DataFrame()
     for col in min.index:
         i = min.loc[col]
@@ -114,6 +114,14 @@ def suppvaluerank(index_full_data,df, max, min, groupby_col=['company_ID_num'], 
         if max_data == min_data:
             tmp[i] = 1
         result = pd.concat([result, tmp], axis=1, )
+    for col in avg.index:
+        i = avg.loc[col]
+        min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
+        max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
+        avg_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'avg'].item()
+        tmp = abs((1 - abs(df[i] - avg_data)) / (max_data - min_data))
+        if max_data == min_data:
+            tmp[i] = 1
     return result
 def score_exception(a):
     if a > 100 or a < 0:
@@ -468,7 +476,7 @@ print(index_info)
 index_full_data = index_full_data.fillna(0)
 index_info = index_info.fillna(0)
 index_full_data = update_index(index_full_data,index_info,weight_info[['index_name', 'index_weight']])
-supp_rank = suppvaluerank(index_full_data,index_info, weight_info[['index_name', 'index_weight']].loc[weight_info['index_direction'] == 'max', ['index_name']],weight_info.loc[weight_info['index_direction'] == 'min', ['index_name']],weights=weight_info)
+supp_rank = suppvaluerank(index_full_data,index_info, weight_info[['index_name', 'index_weight']].loc[weight_info['index_direction'] == 'max', ['index_name']],weight_info.loc[weight_info['index_direction'] == 'min', ['index_name']],weight_info.loc[weight_info['index_direction'] == 'min', ['index_name']],weights=weight_info)
 # write_mysql(supp_rank, "con_index_info_0_1")
 supp_weight = dict(zip(weight_info['index_name'], weight_info['index_weight']))
 weight_value = []
