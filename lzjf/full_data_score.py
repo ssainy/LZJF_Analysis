@@ -15,7 +15,6 @@ pd.set_option('display.max_rows', 100)  # b就是你要设置显示的最大的�
 # password = "1qazxsw2"
 # REGISTERNO="FF80808173942BCB0173942BCB330002"
 
-
 # hostip="192.144.143.127"
 # hostport=3306
 # hostdb="zgc_analysis"
@@ -188,9 +187,9 @@ score['score'] = score.apply(lambda x : score_exception(x.score), axis=1)
 print(score)
 write_mysql(score, "con_index_score")
 
-#modelRes = score[['company_id','creditlimit','MODELRESULT','grade','score']]
-#modelRes.columns = ['company_id','MODELLIMIT','MODELRESULT','MODELLEVEL','MODELSCORE']
-#modelRes['REMARK'] = ss[['REMARK']]
+# modelRes = score[['company_id','creditlimit','MODELRESULT','grade','score']]
+# modelRes.columns = ['company_id','MODELLIMIT','MODELRESULT','MODELLEVEL','MODELSCORE']
+# modelRes['REMARK'] = ss[['REMARK']]
 # del_sql = "delete from con_approve_score where REGISTERNO = '{}';".format(REGISTERNO)
 # query_sql = "select * from con_approve_score where REGISTERNO = '{}';".format(REGISTERNO)
 # if pd.read_sql_query(query_sql, engine).empty is not True:

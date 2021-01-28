@@ -184,7 +184,13 @@ def get_score(rank,weights=[]):
 
     # rank['grade'] = pd.cut(rank['score'], [0, 15, 30, 45, 60, 100], labels=['E', 'D', 'C', 'B', 'A'])
     rank['grade'] = rank.apply(lambda x:grade_exception(x.score,x.grade),axis = 1)
-    rank['bank_creditlimit'] = rank['grade'].map(eval(Read_Rules('ModelGradeLimitMap')))
+    grade_info.grade = (grade_info['grade']).astype(str)
+    grade_info.item_category = (grade_info['CREATLIMIT']).astype(str)
+    item_dict = grade_info.set_index('grade')['CREATLIMIT'].to_dict()
+    print(item_dict)
+    creatlimit = {}
+
+    rank['bank_creditlimit'] = rank['grade'].map(item_dict)
     return rank
 if buy_order.empty is True or saler_order.empty is True:
     sys.stderr.write(r'采购或销售订单数据为空，程序终止!')
