@@ -106,10 +106,8 @@ def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num
         min_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'min'].item()
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
         tmp = abs(round((max_data - df[i]) / (max_data - min_data), 4))
-
         if max_data == min_data:
             tmp[i] = 1
-
         if ('company_ID' and 'REGISTERNO' in result.columns):
             result = pd.concat([result, tmp], axis=1, )
         else:
@@ -120,7 +118,7 @@ def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num
         max_data = index_full_data.loc[index_full_data['index'] == i['index_name'], 'max'].item()
         tmp = abs(round((df[i] - min_data) / (max_data - min_data), 4))
         if max_data == min_data:
-            tmp[i] = 1
+            tmp[i] = 0
         result = pd.concat([result, tmp], axis=1, )
     for col in avg.index:
         i = avg.loc[col]
@@ -132,8 +130,8 @@ def suppvaluerank(index_full_data,df, max, min, avg,groupby_col=['company_ID_num
             tmp[i] = 1
     return result
 def score_exception(a):
-    if a > 90:
-        return 90.0
+    if a > 100:
+        return 100.0
     elif a < 0:
         return 0
     else:
@@ -184,12 +182,10 @@ def get_score(rank,weights=[]):
 
     # rank['grade'] = pd.cut(rank['score'], [0, 15, 30, 45, 60, 100], labels=['E', 'D', 'C', 'B', 'A'])
     rank['grade'] = rank.apply(lambda x:grade_exception(x.score,x.grade),axis = 1)
+    # 将数据库表中的分值和等级转为dict
     grade_info.grade = (grade_info['grade']).astype(str)
     grade_info.item_category = (grade_info['CREATLIMIT']).astype(str)
     item_dict = grade_info.set_index('grade')['CREATLIMIT'].to_dict()
-    print(item_dict)
-    creatlimit = {}
-
     rank['bank_creditlimit'] = rank['grade'].map(item_dict)
     return rank
 if buy_order.empty is True or saler_order.empty is True:
